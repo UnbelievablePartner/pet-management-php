@@ -3,6 +3,7 @@
 include_once dirname(__DIR__) . "/concrete/Code.php";
 include_once dirname(__DIR__) . "/concrete/Pet.php";
 include_once dirname(__DIR__) . "/dao/PetDao.php";
+include_once dirname(__DIR__) . "/dao/MasterDao.php";
 
 $json = $json = file_get_contents("php://input");
 
@@ -14,13 +15,18 @@ $isDel = $reception->isDel;
 
 $PetDao = new PetDao();
 
-$res = $PetDao->getPetById($type, $id, $isDel);
-if (!count($res)) {
+$masterDao = new MasterDao();
+
+if (!($mResult = $masterDao->getMasterById($id,0,0))["flag"]) {
+    $result["code"] = Code::ID_NOT_EXIST;
+    $result["message"]="身份证号不存在";
+}else if (!count($pResult = $PetDao->getPetById($type, $id, $isDel))) {
     $result["code"] = Code::ID_NOT_EXIST;
     $result["message"] = "未查询到宠物";
-} else {
+} 
+else{
     $data = array();
-    foreach ($res as $pet) {
+    foreach ($pResult as $pet) {
         $id = $pet->getId();
         $name = $pet->getName();
         $gender = $pet->getGender();
@@ -35,9 +41,12 @@ if (!count($res)) {
         $val = array("id" => $id, "name" => $name, "gender" => $gender, "species" => $species, "type" => $type, "date" => $date, "isNeutered" => $isNeutered, "Comment" => $comments,"photos"=>$photos,"isDelete"=>$isDelete);
         array_push($data, $val);
     }
+    $master = $mResult["data"];
+    $val = array("masterId"=>($master->getId()),"masterName"=>($master->getName()));
+
     $result["code"] = Code::OK;
     $result["message"] = "查询成功";
-    $result["data"] = $data;
+    $result["data"] = array("pets"=>$data,"masterInfo"=>$val);
 }
 
 echo json_encode($result);

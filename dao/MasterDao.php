@@ -32,7 +32,6 @@ class MasterDao extends Database
                 $master->setAddrDetails($masterAddrDetails);
                 $master->setIsDelete($isDelete);
 
-                $flag = true;
                 $count = $petCount;
             }
             $stmt->free_result();

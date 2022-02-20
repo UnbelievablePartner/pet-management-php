@@ -14,8 +14,10 @@ class Code
     const MASTER_INSERT_FAILED = 2003;
     //添加宠物失败
     const PET_INSERT_FAILED = 2004;
-    //
+    //照片添加失败
     const PHOTO_INSERT_FAILED=2005;
 
+    //宠物更新失败
+    const PET_UPDATE_FAILED=2006;
 
 }

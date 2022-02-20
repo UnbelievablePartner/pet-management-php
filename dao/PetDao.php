@@ -69,4 +69,24 @@ class PetDao extends Database
 
         return $pets;
     }
+
+    public function updatePetMasterId($pId,$mId){
+        $flag=false;
+        
+        if($this->open())
+        {
+            $sql = "update pets set masterId = ? where chipNo=? and isdelete=0;";
+            $stmt = $this->conn->prepare($sql);
+            $stmt -> bind_param("ss",$mId,$pId);
+            $stmt -> execute();
+            
+            if($stmt->affected_rows ==1)
+            {
+                $flag=true;
+            }
+            $stmt->free_result();
+        }
+
+        return $flag;
+    }
 }
