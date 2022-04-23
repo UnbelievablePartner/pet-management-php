@@ -89,4 +89,69 @@ class PetDao extends Database
 
         return $flag;
     }
+
+    public function queryPet($pet,$mId)
+    {
+        $result=array();
+        
+        if($this->open())
+        {
+            $id = $pet->getId();
+            $name = $pet->getName();
+            $gender = $pet->getGender();
+            $species = $pet->getSpecies();
+            $type = $pet->getType();
+            $isNeutered = $pet->getIsNeutered();
+
+            $sql = "select p.nickname,p.chipNo,p.masterId,p.species,p.type,p.sex,p.gotdate,p.isNeutered,m.name from pets p left join masters m on p.masterId=m.id where nickname like ? and chipNo like ? and masterId like ? and species like ? and type like ? and sex like ? and isNeutered like ?;";
+            $stmt = $this->conn->prepare($sql);
+            $stmt -> bind_param("sssssss",$name,$id,$mId,$species,$type,$gender,$isNeutered);
+            $stmt -> bind_result($pname,$pid,$mid,$pspecies,$ptype,$psex,$pgotdate,$pisNeutered,$mname);
+            $stmt -> execute();
+            
+            while($stmt->fetch()){
+                $pet = new Pet();
+                $pet->setId($pid);
+                $pet->setName($pname);
+                $pet->setMasterId($mid);
+                $pet->setMasterName($mname);
+                $pet->setGender($psex);
+                $pet->setSpecies($pspecies);
+                $pet->setType($ptype);
+                $pet->setDate($pgotdate);
+                $pet->setIsNeutered($pisNeutered);
+
+                array_push($result,$pet);
+            }
+            $stmt->free_result();
+        }
+
+        return $result;
+    }
+
+    public function updatePet($pet){
+
+        $flag=false;
+
+        if ($this->open()) {
+            $id = $pet->getId();
+            $name = $pet->getName();
+            $gender = $pet->getGender();
+            $species = $pet->getSpecies();
+            $type = $pet->getType();
+            $isNeutered = $pet->getIsNeutered();
+
+            $sql = "update pets set nickname=?,species=?,type=?,sex=?,isNeutered=? where chipNo=?;";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ssssss", $name, $species, $type, $gender, $isNeutered,$id);
+            $stmt->execute();
+            if ($stmt->affected_rows == 1) {
+                $flag=true;
+            }
+            $stmt->free_result();
+        }
+
+        return $flag;
+    }
 }

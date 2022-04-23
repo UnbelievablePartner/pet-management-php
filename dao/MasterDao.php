@@ -15,7 +15,6 @@ class MasterDao extends Database
         if ($this->open()) {
             $sql = "select *,(select count(chipNo) from pets where masterId = ? and isDelete=?) as 'petCount' from masters where id=? and isDelete=?;";
 
-            //$sql="select *,(select count(chipNo) from pets where masterId = '111111200001011111' and isDelete=1) as 'petCount' from masters where id='111111200001011111' and isDelete=0;";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("sisi", $mId, $pIsDel, $mId, $mIsDel);
             $stmt->bind_result($masterName, $masterId, $masterGender, $masterPhone, $masterCounty, $masterStreetOffice, $masterCommunity, $masterAddrDetails, $isDelete, $petCount);
@@ -64,6 +63,76 @@ class MasterDao extends Database
             $stmt->execute();
             if ($stmt->affected_rows == 1) {
                 $flag = true;
+            }
+            $stmt->free_result();
+        }
+
+        return $flag;
+    }
+
+    public function queryMaster($master)
+    {
+        $results = array();
+
+        if ($this->open()) {
+            $id = $master->getId();
+            $name = $master->getName();
+            $gender = $master->getGender();
+            $phone = $master->getPhone();
+            $county = $master->getCounty();
+            $streetOffice = $master->getStreetOffice();
+            $community = $master->getCommunity();
+            $addrDetails = $master->getAddrDetails();
+
+            $sql = "select `name`,m.id,gender,phone,m.county,cou.county,m.streetOffice,s.streetOffice,m.community,com.community,addr,m.isdelete from masters m left join counties cou on m.county=cou.id left join streetoffices s on m.streetOffice=s.id left join communities com on m.community=com.id where `name` like ? and m.id like ? and gender like ? and phone like ? and m.county like ? and m.streetOffice like ? and m.community like ? and addr like ? and m.isdelete=0;";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ssssssss", $name, $id, $gender, $phone, $county, $streetOffice, $community, $addrDetails);
+            $stmt->bind_result($masterName, $masterId, $masterGender, $masterPhone, $masterCounty, $masterCountyName, $masterStreetOffice, $masterStreetOfficeName, $masterCommunity, $masterCommunityName, $masterAddrDetails, $isDelete);
+            $stmt->execute();
+            while ($stmt->fetch()) {
+                $master = new Master();
+                $master->setId($masterId);
+                $master->setName($masterName);
+                $master->setGender($masterGender);
+                $master->setPhone($masterPhone);
+                $master->setCounty($masterCounty);
+                $master->setCountyName($masterCountyName);
+                $master->setStreetOffice($masterStreetOffice);
+                $master->setStreetOfficeName($masterStreetOfficeName);
+                $master->setCommunity($masterCommunity);
+                $master->setCommunityName($masterCommunityName);
+                $master->setAddrDetails($masterAddrDetails);
+                $master->setIsDelete($isDelete);
+
+                array_push($results,$master);
+            }
+            $stmt->free_result();
+        }
+
+        return $results;
+    }
+
+    public function updateMaster($master){
+
+        $flag=false;
+
+        if ($this->open()) {
+            $id = $master->getId();
+            $name = $master->getName();
+            $phone = $master->getPhone();
+            $county = $master->getCounty();
+            $streetOffice = $master->getStreetOffice();
+            $community = $master->getCommunity();
+            $addrDetails = $master->getAddrDetails();
+
+            $sql = "update masters set name=?,phone=?,county=?,streetOffice=?,community=?,addr=? where id=?;";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("sssssss", $name, $phone, $county, $streetOffice, $community, $addrDetails,$id);
+            $stmt->execute();
+            if ($stmt->affected_rows == 1) {
+                $flag=true;
             }
             $stmt->free_result();
         }

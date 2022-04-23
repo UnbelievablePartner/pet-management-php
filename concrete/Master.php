@@ -9,8 +9,11 @@ class Master
     //private $age;
     private $phone;
     private $county;
+    private $countyName;
     private $streetOffice;
+    private $streetOfficeName;
     private $community;
+    private $communityName;
     private $addrDetails;
     private $isDelete;
 
@@ -88,6 +91,15 @@ class Master
         return $this->county;
     }
 
+    public function setCountyName($value)
+    {
+        $this->countyName=$value;
+    }
+    public function getCountyName()
+    {
+        return $this->countyName;
+    }
+
     //streetOffice
     public function setStreetOffice($value)
     {
@@ -98,6 +110,15 @@ class Master
         return $this->streetOffice;
     }
 
+    public function setStreetOfficeName($value)
+    {
+        $this->streetOfficeName=$value;
+    }
+    public function getStreetOfficeName()
+    {
+        return $this->streetOfficeName;
+    }
+
     //community
     public function setCommunity($value)
     {
@@ -106,6 +127,15 @@ class Master
     public function getCommunity()
     {
         return $this->community;
+    }
+
+    public function setCommunityName($value)
+    {
+        $this->communityName=$value;
+    }
+    public function getCommunityName()
+    {
+        return $this->communityName;
     }
 
     //addrDetails

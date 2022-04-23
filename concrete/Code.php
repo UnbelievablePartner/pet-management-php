@@ -20,4 +20,6 @@ class Code
     //宠物更新失败
     const PET_UPDATE_FAILED=2006;
 
+    //未查询到信息
+    const QUERY_INFO_NOT_EXIST=2007;
 }

@@ -3,6 +3,8 @@ class Pet
 {
     private $id;
     private $name;
+    private $masterId;
+    private $masterName;
     private $species;
     private $type;
     private $gender;
@@ -44,6 +46,26 @@ class Pet
     public function getName()
     {
         return $this->name;
+    }
+
+    //masterId
+    public function setMasterId($value)
+    {
+        $this->masterId=$value;
+    }
+    public function getMasterId()
+    {
+        return $this->masterId;
+    }
+
+    //Mastername
+    public function setMasterName($value)
+    {
+        $this->masterName=$value;
+    }
+    public function getMasterName()
+    {
+        return $this->masterName;
     }
 
     //species

@@ -8,8 +8,12 @@ class Database
 	static $dbname="petmanage";
 	//数据库账号
 	static $user="root";
+	//static $user="sql_pet_management";
+	
 	//数据库密码
 	static $password="123456";
+	//static $password="e2NfwneEmbrZCCpF";
+
 	//数据库连接
 	public $conn;
 	
