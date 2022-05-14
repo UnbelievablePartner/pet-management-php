@@ -4,43 +4,45 @@ include_once dirname(__DIR__) . "/concrete/Master.php";
 include_once dirname(__DIR__) . "/dao/MasterDao.php";
 include_once dirname(__DIR__) . "/dao/PetDao.php";
 
+session_start();
 
+if (Code::checkToken()) {
 
-$append = $_POST["append"];
+    $append = $_POST["append"];
 
-$petId= $_POST["petId"];
-$masterId=$_POST["masterId"];
+    $petId = $_POST["petId"];
+    $masterId = $_POST["masterId"];
 
-$petDao = new PetDao();
+    $petDao = new PetDao();
 
-if($append=="false"){
-    if(!setMaster()){
-        $result["code"] = Code::MASTER_INSERT_FAILED;
-        $result["massage"] = "登记饲主失败";
+    if ($append == "false") {
+        if (!setMaster()) {
+            $result["code"] = Code::MASTER_INSERT_FAILED;
+            $result["massage"] = "登记饲主失败";
+        } else if (!$petDao->updatePetMasterId($petId, $masterId)) {
+            $result["code"] = Code::PET_UPDATE_FAILED;
+            $result["massage"] = "变更登记失败";
+        } else {
+            $result["code"] = Code::OK;
+            $result["massage"] = "变更登记成功";
+        }
+    } else {
+        if (!$petDao->updatePetMasterId($petId, $masterId)) {
+            $result["code"] = Code::PET_UPDATE_FAILED;
+            $result["massage"] = "变更登记失败";
+        } else {
+            $result["code"] = Code::OK;
+            $result["massage"] = "变更登记成功";
+        }
     }
-    else if(!$petDao->updatePetMasterId($petId,$masterId))
-    {
-        $result["code"] = Code::PET_UPDATE_FAILED;
-        $result["massage"] = "变更登记失败";
-    }
-    else{
-        $result["code"] = Code::OK;
-        $result["massage"] = "变更登记成功";
-    }
+
+    echo json_encode($result);
+
 }
-else{
-    if(!$petDao->updatePetMasterId($petId,$masterId))
-    {
-        $result["code"] = Code::PET_UPDATE_FAILED;
-        $result["massage"] = "变更登记失败";
-    }
-    else{
-        $result["code"] = Code::OK;
-        $result["massage"] = "变更登记成功";
-    }
+else
+{
+    http_response_code(401);
 }
-
-echo json_encode($result);
 
 function setMaster()
 {

@@ -5,43 +5,49 @@ include_once dirname(__DIR__) . "/concrete/Pet.php";
 include_once dirname(__DIR__) . "/dao/MasterDao.php";
 include_once dirname(__DIR__) . "/dao/PetDao.php";
 
- 
+session_start();
 
-$result = array();
+if (Code::checkToken()) {
 
-$GLOBALS["photoPath"]=[];
+    $result = array();
 
-if ($_POST["append"]=="false") {
+    $GLOBALS["photoPath"] = [];
 
-    if (!setPhotos()) {
-        $result["code"] = Code::PET_INSERT_FAILED;
-        $result["massage"] = "登记照片上传失败";
-    } else if (!setMaster()) {
-        $result["code"] = Code::MASTER_INSERT_FAILED;
-        $result["massage"] = "登记饲主失败";
-    } else if (!setPet()) {
-        $result["code"] = Code::PET_INSERT_FAILED;
-        $result["massage"] = "登记宠物失败,请检查该宠物或编号是否已登记过";
+    if ($_POST["append"] == "false") {
+
+        if (!setPhotos()) {
+            $result["code"] = Code::PET_INSERT_FAILED;
+            $result["massage"] = "登记照片上传失败";
+        } else if (!setMaster()) {
+            $result["code"] = Code::MASTER_INSERT_FAILED;
+            $result["massage"] = "登记饲主失败";
+        } else if (!setPet()) {
+            $result["code"] = Code::PET_INSERT_FAILED;
+            $result["massage"] = "登记宠物失败,请检查该宠物或编号是否已登记过";
+        } else {
+            $result["code"] = Code::OK;
+            $result["massage"] = "登记成功";
+        }
+
     } else {
-        $result["code"] = Code::OK;
-        $result["massage"] = "登记成功";
+
+        if (!$res = setPhotos()) {
+            $result["code"] = Code::PET_INSERT_FAILED;
+            $result["massage"] = "登记照片上传失败";
+        } else if (!setPet()) {
+            $result["code"] = Code::PET_INSERT_FAILED;
+            $result["massage"] = "登记宠物失败,请检查该宠物或编号是否已登记过";
+        } else {
+            $result["code"] = Code::OK;
+            $result["massage"] = "登记成功";
+        }
+
     }
+    echo json_encode($result);
 
 } else {
-
-    if (!$res = setPhotos()) {
-        $result["code"] = Code::PET_INSERT_FAILED;
-        $result["massage"] = "登记照片上传失败";
-    } else if (!setPet()) {
-        $result["code"] = Code::PET_INSERT_FAILED;
-        $result["massage"] = "登记宠物失败,请检查该宠物或编号是否已登记过";
-    } else {
-        $result["code"] = Code::OK;
-        $result["massage"] = "登记成功";
-    }
-
+    http_response_code(401);
 }
-echo json_encode($result);
 
 //函数
 function setMaster()
@@ -88,7 +94,7 @@ function setPhotos()
 {
 
     if (!count($_FILES)) {
-        $GLOBALS["photoPath"]["photo0"]="/upload/default/default.jpg";
+        $GLOBALS["photoPath"]["photo0"] = "/upload/default/default.jpg";
         return true;
     }
 

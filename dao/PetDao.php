@@ -154,4 +154,23 @@ class PetDao extends Database
 
         return $flag;
     }
+
+    public function deletePet($petId)
+    {
+        $flag=false;
+
+        if ($this->open()) {
+            $sql = "update pets set isDelete=1 where chipNo =?;";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $petId);
+            $stmt->execute();
+            if ($stmt->affected_rows == 1) {
+                $flag=true;
+            }
+            $stmt->free_result();
+        }
+
+        return $flag;
+    }
 }

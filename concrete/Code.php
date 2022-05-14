@@ -22,4 +22,11 @@ class Code
 
     //未查询到信息
     const QUERY_INFO_NOT_EXIST=2007;
+
+    //删除失败
+    const DELETE_INFO_FAILED=2008;
+
+    public static function checkToken(){
+        return (array_key_exists("HTTP_X_AUTH_TOKEN", $_SERVER) &&  $_SERVER["HTTP_X_AUTH_TOKEN"] == $_SESSION["OperatorToken"]);
+    }
 }

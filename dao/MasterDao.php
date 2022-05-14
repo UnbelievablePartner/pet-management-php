@@ -139,4 +139,23 @@ class MasterDao extends Database
 
         return $flag;
     }
+
+    public function deleteMaster($masterId)
+    {
+        $flag=false;
+
+        if ($this->open()) {
+            $sql = "update masters set isDelete=1 where id=?;";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $masterId);
+            $stmt->execute();
+            if ($stmt->affected_rows == 1) {
+                $flag=true;
+            }
+            $stmt->free_result();
+        }
+
+        return $flag;
+    }
 }
