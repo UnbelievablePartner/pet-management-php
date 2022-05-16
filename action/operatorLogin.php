@@ -5,7 +5,7 @@ include_once dirname(__DIR__) . "/dao/OperatorDao.php";
 
 $operator = new Operator();
 
-$operator->setId($_POST["userId"]);
+$operator->setNo($_POST["userId"]);
 $operator->setPassword($_POST["userPwd"]);
 
 
@@ -14,7 +14,7 @@ if($OperatorDao->operatorLogin($operator))
 {
     
     $datetime = new DateTime();
-    $token=md5($operator->getId().$datetime->format("YmdHis"));
+    $token=md5($operator->getNo().$datetime->format("YmdHis"));
     session_start();
     $_SESSION["OperatorToken"]=$token;
 

@@ -1,15 +1,17 @@
 <?php
 class Operator
 {
-    private $id;
+    private $no;
     private $name;
+    private $id;
     private $password;
     private $isDelete;
 
     public function __construct()
     {
-        $this->id = 0;
+        $this->id = "";
         $this->name = "";
+        $this->no = "";
         $this->password = "";
         $this->isDelete = 0;
     }
@@ -21,6 +23,16 @@ class Operator
     public function getId()
     {
         return $this->id;
+    }
+
+    //no
+    public function setNo($value)
+    {
+        $this->no=$value;
+    }
+    public function getNo()
+    {
+        return $this->no;
     }
 
     //name

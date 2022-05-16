@@ -1,6 +1,7 @@
 <?php
 class Vaccine
 {
+    private $id;
     private $petId;
     private $batch;
     private $date;
@@ -10,12 +11,21 @@ class Vaccine
 
     public function __construct()
     {
+        $this->id="";
         $this->petId="";
         $this->batch="";
         $this->date="";
         $this->producer="";
         $this->place="";
         $this->isDelete=0;
+    }
+
+    public function setId($val)
+    {
+        $this->id=$val;
+    }
+    public function getId(){
+        return $this->id;
     }
 
     public function setPetId($val)

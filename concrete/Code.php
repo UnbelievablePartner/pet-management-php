@@ -17,7 +17,7 @@ class Code
     //照片添加失败
     const PHOTO_INSERT_FAILED=2005;
 
-    //宠物更新失败
+    //更新失败
     const PET_UPDATE_FAILED=2006;
 
     //未查询到信息
